@@ -1,19 +1,16 @@
 
 class Node:
-    """Nút (Node) cơ bản trong danh sách liên kết đơn."""
     def __init__(self, du_lieu):
         self.du_lieu = du_lieu
         self.tiep = None
 
 
 class DanhSachLienKet:
-    """Danh sách liên kết đơn tự cài đặt."""
     def __init__(self):
         self.dau = None
         self.kich_thuoc = 0
 
     def them_cuoi(self, du_lieu):
-        """Thêm phần tử vào cuối danh sách."""
         node_moi = Node(du_lieu)
         if self.dau is None:
             self.dau = node_moi
@@ -25,7 +22,6 @@ class DanhSachLienKet:
         self.kich_thuoc += 1
 
     def lay(self, vi_tri):
-        """Lấy phần tử tại một vị trí cụ thể."""
         if vi_tri < 0 or vi_tri >= self.kich_thuoc:
             return None
         hien_tai = self.dau
@@ -36,11 +32,10 @@ class DanhSachLienKet:
         return hien_tai.du_lieu
 
     def do_dai(self):
-        """Trả về số lượng phần tử."""
         return self.kich_thuoc
 
     def tim_kiem(self, dieu_kien):
-        """Tìm kiếm phần tử đầu tiên thỏa mãn điều kiện."""
+
         hien_tai = self.dau
         while hien_tai is not None:
             if dieu_kien(hien_tai.du_lieu):
@@ -49,7 +44,7 @@ class DanhSachLienKet:
         return None
 
     def tim_kiem_tat_ca(self, dieu_kien):
-        """Lọc tất cả phần tử thỏa mãn điều kiện trả về DanhSachLienKet."""
+
         ket_qua = DanhSachLienKet()
         hien_tai = self.dau
         while hien_tai is not None:
@@ -59,7 +54,6 @@ class DanhSachLienKet:
         return ket_qua
 
     def dem(self, dieu_kien):
-        """Đếm số phần tử thỏa mãn điều kiện."""
         so_luong = 0
         hien_tai = self.dau
         while hien_tai is not None:
@@ -69,14 +63,12 @@ class DanhSachLienKet:
         return so_luong
 
     def duyet(self):
-        """Cung cấp trình vòng lặp duyệt qua danh sách."""
         hien_tai = self.dau
         while hien_tai is not None:
             yield hien_tai.du_lieu
             hien_tai = hien_tai.tiep
 
     def xoa_theo_dieu_kien(self, dieu_kien):
-        """Xóa phần tử đầu tiên thỏa mãn điều kiện."""
         if self.dau is None:
             return False
             
@@ -97,7 +89,7 @@ class DanhSachLienKet:
         return False
         
     def cap_nhat_theo_dieu_kien(self, dieu_kien, du_lieu_moi):
-        """Cập nhật phần tử đầu tiên thỏa mãn điều kiện."""
+
         hien_tai = self.dau
         while hien_tai is not None:
             if dieu_kien(hien_tai.du_lieu):
@@ -107,7 +99,6 @@ class DanhSachLienKet:
         return False
 
     def sap_xep(self, ham_so_sanh):
-        """Thuật toán sắp xếp nổi bọt (Bubble sort)"""
         if self.kich_thuoc <= 1:
             return
         da_doi_cho = True
@@ -123,18 +114,123 @@ class DanhSachLienKet:
                     da_doi_cho = True
                 hien_tai = hien_tai.tiep
 
+    def tim_max(self, ham_lay_gia_tri):
+
+        if self.dau is None:
+            return None, None
+        phan_tu_max = self.dau.du_lieu
+        gia_tri_max = ham_lay_gia_tri(phan_tu_max)
+        hien_tai = self.dau.tiep
+        while hien_tai is not None:
+            gia_tri = ham_lay_gia_tri(hien_tai.du_lieu)
+            if gia_tri > gia_tri_max:
+                gia_tri_max = gia_tri
+                phan_tu_max = hien_tai.du_lieu
+            hien_tai = hien_tai.tiep
+        return phan_tu_max, gia_tri_max
+
+    def tim_min(self, ham_lay_gia_tri):
+ 
+        if self.dau is None:
+            return None, None
+        phan_tu_min = self.dau.du_lieu
+        gia_tri_min = ham_lay_gia_tri(phan_tu_min)
+        hien_tai = self.dau.tiep
+        while hien_tai is not None:
+            gia_tri = ham_lay_gia_tri(hien_tai.du_lieu)
+            if gia_tri < gia_tri_min:
+                gia_tri_min = gia_tri
+                phan_tu_min = hien_tai.du_lieu
+            hien_tai = hien_tai.tiep
+        return phan_tu_min, gia_tri_min
+
+class Stack:
+
+    def __init__(self):
+        self._dinh = None   
+        self._kich_thuoc = 0
+
+    def push(self, du_lieu):
+        node_moi = Node(du_lieu)
+        node_moi.tiep = self._dinh
+        self._dinh = node_moi
+        self._kich_thuoc += 1
+
+    def pop(self):
+
+        if self.is_empty():
+            return None
+        du_lieu = self._dinh.du_lieu
+        self._dinh = self._dinh.tiep
+        self._kich_thuoc -= 1
+        return du_lieu
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self._dinh.du_lieu
+
+    def is_empty(self):
+        return self._dinh is None
+
+    def kich_thuoc(self):
+        return self._kich_thuoc
+
+
+class Queue:
+
+    def __init__(self):
+        self._dau = None    
+        self._duoi = None   
+        self._kich_thuoc = 0
+
+    def enqueue(self, du_lieu):
+        node_moi = Node(du_lieu)
+        if self._duoi is None:
+            self._dau = node_moi
+            self._duoi = node_moi
+        else:
+            self._duoi.tiep = node_moi
+            self._duoi = node_moi
+        self._kich_thuoc += 1
+
+    def dequeue(self):
+
+        if self.is_empty():
+            return None
+        du_lieu = self._dau.du_lieu
+        self._dau = self._dau.tiep
+        if self._dau is None:
+            # Hàng vừa trở nên rỗng
+            self._duoi = None
+        self._kich_thuoc -= 1
+        return du_lieu
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self._dau.du_lieu
+
+    def is_empty(self):
+        return self._dau is None
+
+    def kich_thuoc(self):
+        return self._kich_thuoc
+
+    def duyet(self):
+        hien_tai = self._dau
+        while hien_tai is not None:
+            yield hien_tai.du_lieu
+            hien_tai = hien_tai.tiep
+
 # CÁC HÀM TIỆN ÍCH TỰ CÀI ĐẶT
 
 def chia_chuoi(chuoi_goc, ky_tu_phan_cach):
-    """
-    Hàm tự phân tích chuỗi (thay thế cho split của Python).
-    Trả về một DanhSachLienKet chứa các chuỗi con.
-    """
     ket_qua = DanhSachLienKet()
     tu_hien_tai = ""
     i = 0
     chieu_dai = 0
-
+    
     for c in chuoi_goc:
         chieu_dai += 1
         
@@ -205,7 +301,7 @@ def chuoi_co_so(chuoi):
 def so_ngay_trong_thang(thang):
     """Trả về số ngày trong một tháng thủ công."""
     if thang == 2:
-        return 29
+        return 29 
     if thang == 4 or thang == 6 or thang == 9 or thang == 11:
         return 30
     return 31
